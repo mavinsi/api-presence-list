@@ -58,17 +58,24 @@ let DB = {
 
 
 app.get("/event", (req, res) => {  
+
+    if(req.query.id == undefined || null){
+        res.send(400)
+    }else{ 
     res.statusCode = 200;
     console.log("[API] Party GET request to " + req.query.id)
    let party = DB.party.filter(e => e.id == req.query.id)
 
 
     res.json(party)
-   
+}
 
 })
 
 app.post("/event", (req, res) => {
+    if(req.query.id == undefined || null){
+    res.send(400)
+    }else{ 
     let { instagram, name, id } = req.body
     const id_list = id
     let party = DB.party.filter(e => e.id == req.query.id)
@@ -97,11 +104,12 @@ app.post("/event", (req, res) => {
 }else{
     res.sendStatus(420)
 }
+    }
 })
 
 
 
-app.listen(process.env.PORT || 3000), () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("[API] STATUS: ONLINE")
     console.log(`[API] URL`)
 })
