@@ -101,7 +101,7 @@ app.post("/event", (req, res) => {
 
 
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000), () => {
     console.log("[API] STATUS: ONLINE")
-    console.log(`[API] URL: http://localhost:3000`)
+    console.log(`[API] URL`)
 })
