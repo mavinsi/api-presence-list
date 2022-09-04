@@ -5,5 +5,22 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1"
-  }
+  },
+  "name": "presencelist",
+  "version": "0.0.1",
+  "description": "api presence list",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "start": "node ./api/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavinsi/api-presence-list.git"
+  },
+  "author": "Marcus Rodriguez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mavinsi/api-presence-list/issues"
+  },
+  "homepage": "https://github.com/mavinsi/api-presence-list#readme"
 }
