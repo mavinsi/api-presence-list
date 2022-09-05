@@ -3,11 +3,7 @@ const express = require('express')
 const sequelize = require('sequelize')
 const connection = require('./database/database')
 const {Confirmed, Event }= require('./database/eventModel')
-connection.authenticate().then(() => {
-    console.log("CONEXÃO COM MYSQL OK!")
-}).catch(error => {
-    console.log(error)
-})
+connection.authenticate().then(() => {console.log('Connection has been established successfully.'); }).catch(err => { console.error('Unable to connect to the database');});
 
 const app = express()
 const bodyParser = require('body-parser')
