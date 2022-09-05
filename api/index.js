@@ -51,10 +51,10 @@ app.get("/event", (req, res) => {
 
         res.statusCode = 200;
         console.log("[API] Party GET request to " + req.query.id)
-
+        let eventid = req.query.id
         //    let party = db.get('event').filter(e => e.id == req.query.id)
         console.log(req.query.id)
-        Event.findOne({ raw: true, nest: true, where: { eventid: req.query.id } }).then(Event => {
+        Event.findOne({ raw: true, nest: true, where: { eventid: eventid } }).then(Event => {
             res.send(Event)
         })
 
@@ -66,9 +66,14 @@ app.get("/list", (req, res) => {
     if (req.query.id == undefined || null) {
         res.send(400)
     } else {
+        let eventid = req.query.id
 
     Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
-        res.send(person)
+       let result = {
+        data: person,
+       counts: person.length
+       }
+        res.send(result)
     })
 }
 })
