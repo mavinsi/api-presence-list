@@ -62,7 +62,16 @@ app.get("/event", (req, res) => {
     }
 
 })
+app.get("/list", (req, res) => {
+    if (req.query.id == undefined || null) {
+        res.send(400)
+    } else {
 
+    Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
+        res.send(person)
+    })
+}
+})
 app.post("/event", (req, res) => {
     if (req.query.id == undefined || null) {
         res.send(400)
