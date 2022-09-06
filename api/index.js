@@ -84,9 +84,9 @@ app.post("/event", (req, res) => {
         let { instagram, name, id, eventid } = req.body
         
                         Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
-                            console.log("=======NOVA REQUISEIÇÃO========")
+                            console.log("=======NOVA REQUISIÇÃO========")
                             
-     if(person.some(result => result.personInstagram == instagram) == true){
+     if(person.some(result => result.personInstagram == instagram) == true && person.some(result => result.personInstagram == "Não informado") == true){
         res.send(419)
      }else{
         if(person.some(result => result.personName == name) == true){
@@ -103,35 +103,7 @@ app.post("/event", (req, res) => {
                                           })
         }
      }
-                    //     person.forEach(element => {
 
-                    //         console.log(`${element.personName} == ${name}`)
-                    //         if(element.personName == name){
-                    //          console.log("420")
-                               
-                    //             return res.send(420)
-                               
-                    // }else{
-                    //     console.log(`${element.personInstagram} == ${instagram}`)
-                    //     if(element.personInstagram == instagram){
-                    //         console.log("419")
-                    //         return  res.send(419)
-                    //     }else{
-                    //         Confirmed.create({
-                    //                         eventid,
-                    //                         personid: id,
-                    //                         personInstagram: instagram,
-                    //                         personName: name,
-                    //                         personChecked: false
-                    //                       }).then(()=>{
-                    //                         return  res.send(200)
-                    //                       })
-                          
-                    //     }
-                    // }
-                    
-                    //    });
-                         
 
                        })
                      }
@@ -139,6 +111,28 @@ app.post("/event", (req, res) => {
                 
     
                 
+})
+
+app.delete("/event", (req, res) => {
+console.table(req.body)
+    if (req.body.id == undefined || null) {
+        res.send(400)
+    } else {
+        let personid = String(req.body.id)
+
+    Confirmed.destroy({ where: { personid: personid , eventid: req.query.id} }).then(function(rowDeleted){ 
+        if(rowDeleted === 1){
+            res.send(200)
+           console.log('Pessoa deletada');
+         }else{
+            res.send(400)
+         }
+      }, function(err){
+        res.send(400)
+          console.log(err); 
+      });
+
+}
 })
 
 
