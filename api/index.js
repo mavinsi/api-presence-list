@@ -25,7 +25,7 @@ function random(length) {
 
 
 
-app.post("/eventCreate", (req, res) => {
+app.post("/eventAdmin", (req, res) => {
     let { adminpass,eventid, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
     Event.create({
         adminpass: adminpass,
@@ -113,18 +113,20 @@ app.post("/event", (req, res) => {
                 
 })
 
-app.delete("/deleteEvent", (req, res) => {
+
+
+app.delete("/eventAdmin", (req, res) => {
     console.table(req.body)
-        if (req.body.id == undefined || null) {
+        if (req.body.eventid == undefined || null) {
             res.send(400)
         } else {
       
-    
-        Event.destroy({ where: { eventid: req.query.id} }).then(function(rowDeleted){ 
+            
+        Event.destroy({ where: { eventid: req.body.eventid,adminpass: req.body.adminpass} }).then(function(rowDeleted){ 
             if(rowDeleted === 1){
                 res.send(200)
                console.log('Evento Deletado');
-             }else{
+             }else{ 
                 res.send(400)
              }
           }, function(err){
