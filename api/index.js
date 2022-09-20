@@ -113,6 +113,29 @@ app.post("/event", (req, res) => {
                 
 })
 
+app.delete("/deleteEvent", (req, res) => {
+    console.table(req.body)
+        if (req.body.id == undefined || null) {
+            res.send(400)
+        } else {
+      
+    
+        Event.destroy({ where: { eventid: req.query.id} }).then(function(rowDeleted){ 
+            if(rowDeleted === 1){
+                res.send(200)
+               console.log('Evento Deletado');
+             }else{
+                res.send(400)
+             }
+          }, function(err){
+            res.send(400)
+              console.log(err); 
+          });
+    
+    }
+    })
+    
+
 app.delete("/event", (req, res) => {
 console.table(req.body)
     if (req.body.id == undefined || null) {
