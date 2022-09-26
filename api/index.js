@@ -27,21 +27,45 @@ function random(length) {
 
 app.post("/eventAdmin", (req, res) => {
     let { adminpass,eventid, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
-    Event.create({
-        adminpass: adminpass,
-        eventid: eventid,
-        eventname: eventname,
-        bannerurl: bannerurl,
-        background: background,
-        eventdate: eventdate,
-        localization: localization,
-        information: information,
-        list: list,
-    }).then(() => {
-        res.send(200)
-    }).catch(error => {
-        res.send(error)
-    })
+    Event.findOne({ raw: true, nest: true, where: { eventid: eventid } }).then(resultado => {
+        if(resultado == null || undefined){
+            Event.create({
+                adminpass: adminpass,
+                eventid: eventid,
+                eventname: eventname,
+                bannerurl: bannerurl,
+                background: background,
+                eventdate: eventdate,
+                localization: localization,
+                information: information,
+                list: list,
+            }).then(() => {
+                res.send(200)
+            }).catch(error => {
+                res.send(error)
+            })
+        }else{
+            res.send(400)
+        }
+     }).catch(err =>{
+         console.log(err)
+     })
+   
+})
+
+
+app.put("/eventAdmin/", (req, res) => {
+let { eventid, eventname, bannerurl, background, eventdate, localization, information} = req.body
+    Event.update(
+        { eventname,bannerurl, background,eventdate,localization,information },
+        { where: { eventid } }
+      ).then(() => {
+          res.send(200)
+      }).catch(err =>{
+        res.send(400)
+      })
+    
+   
 })
 app.get("/event", (req, res) => {
 
@@ -124,10 +148,19 @@ app.delete("/eventAdmin", (req, res) => {
             
         Event.destroy({ where: { eventid: req.body.eventid,adminpass: req.body.adminpass} }).then(function(rowDeleted){ 
             if(rowDeleted === 1){
-                res.send(200)
-               console.log('Evento Deletado');
+                Confirmed.destroy({ where: { eventid: req.body.eventid} }).then(function(rowDeleted){ 
+                    if(rowDeleted >= 0 ){
+                        res.send(200)
+                       console.log('Evento/Convidados Deletados');
+                     }else{ 
+                        res.send(400)
+                     }
+                  }, function(err){
+                    res.send(400)
+                      console.log(err); 
+                  });
              }else{ 
-                res.send(400)
+                res.send(404)
              }
           }, function(err){
             res.send(400)
