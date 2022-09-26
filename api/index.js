@@ -55,16 +55,15 @@ app.post("/eventAdmin", (req, res) => {
 
 
 app.put("/eventAdmin/", (req, res) => {
-let { eventid, eventname, bannerurl, background, eventdate, localization, information} = req.body
+let { eventid,adminpass, eventname, bannerurl, background, eventdate, localization, information} = req.body
     Event.update(
         { eventname,bannerurl, background,eventdate,localization,information },
-        { where: { eventid } }
+        { where: { eventid, adminpass } }
       ).then(() => {
           res.send(200)
       }).catch(err =>{
         res.send(400)
       })
-    
    
 })
 app.get("/event", (req, res) => {
