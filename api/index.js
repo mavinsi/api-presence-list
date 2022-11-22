@@ -179,7 +179,7 @@ app.delete("/event", (req, res) => {
     } else {
         let personid = String(req.body.id)
 
-        Confirmed.destroy({ where: { personid: personid, eventid: req.query.id } }).then(function (rowDeleted) {
+        Confirmed.destroy({ where: { personid: personid, eventid: {[sequelize.Op.like]: `%${eventid}%` }} }).then(function (rowDeleted) {
             if (rowDeleted === 1) {
                 res.send(200)
                 console.log('Pessoa deletada');
