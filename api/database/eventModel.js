@@ -32,11 +32,6 @@ const Event = connection.define('events', {
     },
     information: {
         type: Sequelize.TEXT
-    },
-    finished:{
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
     }
 });
 
