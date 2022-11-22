@@ -56,9 +56,8 @@ app.post("/eventAdmin", (req, res) => {
 
 app.put("/eventAdmin/", (req, res) => {
 let { eventid,adminpass, eventname, bannerurl, background, eventdate, localization, information} = req.body
-    Event.update(
-        { eventname,bannerurl, background,eventdate,localization,information },
-        { where: { eventid, adminpass } }
+let total = req.body
+    Event.update({ total }, { where: { eventid, adminpass } }
       ).then(() => {
           res.send(200)
       }).catch(err =>{
@@ -115,6 +114,7 @@ app.post("/event", (req, res) => {
         if(person.some(result => result.personName == name) == true){
             res.send(420)
         }else{
+            console.log(`${name} Confirmou presença em ${eventid}`)
                                         Confirmed.create({
                                             eventid,
                                             personid: id,
