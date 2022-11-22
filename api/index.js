@@ -2,12 +2,12 @@ console.log("[API] STATUS: INICIANDO")
 const express = require('express')
 const sequelize = require('sequelize')
 const connection = require('./database/database')
-const {Confirmed, Event }= require('./database/eventModel')
-connection.authenticate().then(() => {console.log('Connection has been established successfully.'); }).catch(err => { console.error('Unable to connect to the database');});
+const { Confirmed, Event } = require('./database/eventModel')
+connection.authenticate().then(() => { console.log('Connection has been established successfully.'); }).catch(err => { console.error('Unable to connect to the database'); });
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require("cors")
-
+      
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -26,9 +26,9 @@ function random(length) {
 
 
 app.post("/eventAdmin", (req, res) => {
-    let { adminpass,eventid, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
+    let { adminpass, eventid, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
     Event.findOne({ raw: true, nest: true, where: { eventid: eventid } }).then(resultado => {
-        if(resultado == null || undefined){
+        if (resultado == null || undefined) {
             Event.create({
                 adminpass: adminpass,
                 eventid: eventid,
@@ -44,26 +44,26 @@ app.post("/eventAdmin", (req, res) => {
             }).catch(error => {
                 res.send(error)
             })
-        }else{
+        } else {
             res.send(400)
         }
-     }).catch(err =>{
-         console.log(err)
-     })
-   
+    }).catch(err => {
+        console.log(err)
+    })
+
 })
 
 
 app.put("/eventAdmin/", (req, res) => {
-let { eventid,adminpass, eventname, bannerurl, background, eventdate, localization, information} = req.body
-let total = req.body
+    let { eventid, adminpass, eventname, bannerurl, background, eventdate, localization, information } = req.body
+    let total = req.body
     Event.update({ total }, { where: { eventid, adminpass } }
-      ).then(() => {
-          res.send(200)
-      }).catch(err =>{
+    ).then(() => {
+        res.send(200)
+    }).catch(err => {
         res.send(400)
-      })
-   
+    })
+
 })
 app.get("/event", (req, res) => {
 
@@ -89,107 +89,109 @@ app.get("/list", (req, res) => {
         res.send(400)
     } else {
         let eventid = req.query.id
+             // biblioteca de operadores
 
-    Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
-       let result = {
-        data: person,
-       counts: person.length
-       }
-        res.send(result)
-    })
-}
+        Confirmed.findAll({ raw: true, nest: true, where: {  eventid: {[sequelize.Op.like]: `%${eventid}%` } }}).then(person => {
+            console.table(person)
+            let result = {
+                data: person,
+                counts: person.length
+            }
+            res.send(result)
+        })
+    }
 })
 app.post("/event", (req, res) => {
     if (req.query.id == undefined || null) {
         res.send(400)
     } else {
         let { instagram, name, id, eventid } = req.body
-        
-                        Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
-                            console.log("=======NOVA REQUISIÇÃO========")
-                            
-     if(person.some(result => result.personInstagram == instagram) == true && person.some(result => result.personInstagram == "Não informado") == true){
-        res.send(419)
-     }else{
-        if(person.some(result => result.personName == name) == true){
-            res.send(420)
-        }else{
-            console.log(`${name} Confirmou presença em ${eventid}`)
-                                        Confirmed.create({
-                                            eventid,
-                                            personid: id,
-                                            personInstagram: instagram,
-                                            personName: name,
-                                            personChecked: false
-                                          }).then(()=>{
-                                          res.send(200)
-                                          })
-        }
-     }
+
+        Confirmed.findAll({ raw: true, nest: true, where: { eventid: eventid } }).then(person => {
+            console.log("=======NOVA REQUISIÇÃO========")
+
+            if (person.some(result => result.personInstagram == instagram) == true && person.some(result => result.personInstagram == "Não informado") == true) {
+                res.send(419)
+            } else {
+                if (person.some(result => result.personName == name) == true) {
+                    res.send(420)
+                } else {
+                    console.log(`${name} Confirmou presença em ${eventid}`)
+                    Confirmed.create({
+                        eventid,
+                        personid: id,
+                        personInstagram: instagram,
+                        personName: name,
+                        personChecked: false
+                    }).then(() => {
+                        res.send(200)
+                    })
+                }
+            }
 
 
-                       })
-                     }
+        })
+    }
 
-                
-    
-                
+
+
+
 })
 
 
 
 app.delete("/eventAdmin", (req, res) => {
     console.table(req.body)
-        if (req.body.eventid == undefined || null) {
-            res.send(400)
-        } else {
-      
-            
-        Event.destroy({ where: { eventid: req.body.eventid,adminpass: req.body.adminpass} }).then(function(rowDeleted){ 
-            if(rowDeleted === 1){
-                Confirmed.destroy({ where: { eventid: req.body.eventid} }).then(function(rowDeleted){ 
-                    if(rowDeleted >= 0 ){
+    if (req.body.eventid == undefined || null) {
+        res.send(400)
+    } else {
+
+
+        Event.destroy({ where: { eventid: req.body.eventid, adminpass: req.body.adminpass } }).then(function (rowDeleted) {
+            if (rowDeleted === 1) {
+                Confirmed.destroy({ where: { eventid: req.body.eventid } }).then(function (rowDeleted) {
+                    if (rowDeleted >= 0) {
                         res.send(200)
-                       console.log('Evento/Convidados Deletados');
-                     }else{ 
+                        console.log('Evento/Convidados Deletados');
+                    } else {
                         res.send(400)
-                     }
-                  }, function(err){
+                    }
+                }, function (err) {
                     res.send(400)
-                      console.log(err); 
-                  });
-             }else{ 
+                    console.log(err);
+                });
+            } else {
                 res.send(404)
-             }
-          }, function(err){
+            }
+        }, function (err) {
             res.send(400)
-              console.log(err); 
-          });
-    
+            console.log(err);
+        });
+
     }
-    })
-    
+})
+
 
 app.delete("/event", (req, res) => {
-console.table(req.body)
+    console.table(req.body)
     if (req.body.id == undefined || null) {
         res.send(400)
     } else {
         let personid = String(req.body.id)
 
-    Confirmed.destroy({ where: { personid: personid , eventid: req.query.id} }).then(function(rowDeleted){ 
-        if(rowDeleted === 1){
-            res.send(200)
-           console.log('Pessoa deletada');
-         }else{
+        Confirmed.destroy({ where: { personid: personid, eventid: req.query.id } }).then(function (rowDeleted) {
+            if (rowDeleted === 1) {
+                res.send(200)
+                console.log('Pessoa deletada');
+            } else {
+                res.send(400)
+            }
+        }, function (err) {
             res.send(400)
-         }
-      }, function(err){
-        res.send(400)
-          console.log(err); 
-      });
+            console.log(err);
+        });
 
-}
+    }
 })
 
 
