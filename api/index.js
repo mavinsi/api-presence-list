@@ -56,7 +56,10 @@ app.post("/eventAdmin", (req, res) => {
 
 app.put("/eventAdmin/", (req, res) => {
     let { eventid, adminpass, eventname, bannerurl, background, eventdate, localization, information } = req.body
+    console.log(`Atualizando ${eventid}`)
+  
     let total = req.body
+    console.table(total)
     Event.update({ total }, { where: { eventid, adminpass } }
     ).then(() => {
         res.send(200)
