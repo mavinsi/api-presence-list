@@ -105,8 +105,7 @@ app.get("/list", (req, res) => {
     }
 })
 app.post("/event", (req, res) => {
-    console.log("Teste")
-    if (req.query.id == undefined || null) {
+    if (req.body.eventid == undefined || null) {
         res.send(400)
     } else {
         let { instagram, name, id, eventid } = req.body
