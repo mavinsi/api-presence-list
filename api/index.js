@@ -200,7 +200,7 @@ app.delete("/event", (req, res) => {
 
 
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(80, () => {
     console.log("[API] STATUS: ONLINE")
     console.log(`[API] URL`)
 })
