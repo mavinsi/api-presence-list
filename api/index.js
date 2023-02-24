@@ -200,7 +200,7 @@ app.delete("/event", (req, res) => {
 
 
 
-app.listen(443, () => {
+app.listen(3000, () => {
     console.log("[API] STATUS: ONLINE")
     console.log(`[API] URL`)
 })
