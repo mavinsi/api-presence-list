@@ -12,7 +12,7 @@ const Event = connection.define('events', {
     },
     eventdesc: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: true
     },
     eventname: {
         type: Sequelize.TEXT,
