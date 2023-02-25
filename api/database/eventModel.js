@@ -11,8 +11,7 @@ const Event = connection.define('events', {
         allowNull: false
     },
     eventdesc: {
-        type: Sequelize.TEXT,
-        allowNull: false
+        type: Sequelize.TEXT
     },
     eventname: {
         type: Sequelize.TEXT,
