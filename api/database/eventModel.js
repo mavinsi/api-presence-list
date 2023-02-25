@@ -10,6 +10,10 @@ const Event = connection.define('events', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    eventdesc: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
     eventname: {
         type: Sequelize.TEXT,
         allowNull: false
@@ -60,9 +64,9 @@ const Confirmed = connection.define('confirmeds', {
 })
 
 
-Event.sync({ force: false }).then(() => {
+Event.sync({ force: true }).then(() => {
 
 })
-Confirmed.sync({ force: false }).then(() => {})
+Confirmed.sync({ force: true }).then(() => {})
 
 module.exports = { Event, Confirmed }
