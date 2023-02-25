@@ -64,9 +64,9 @@ const Confirmed = connection.define('confirmeds', {
 })
 
 
-Event.sync({ force: true }).then(() => {
+Event.sync({ force: false }).then(() => {
 
 })
-Confirmed.sync({ force: true }).then(() => {})
+Confirmed.sync({ force: false }).then(() => {})
 
 module.exports = { Event, Confirmed }
