@@ -7,7 +7,8 @@ connection.authenticate().then(() => { console.log('Connection has been establis
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require("cors")
-      
+const { info } = require('autoprefixer')
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -26,12 +27,13 @@ function random(length) {
 
 
 app.post("/eventAdmin", (req, res) => {
-    let { adminpass, eventid, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
+    let { adminpass, eventid, eventdesc, eventname, bannerurl, background, eventdate, localization, information, list } = req.body
     Event.findOne({ raw: true, nest: true, where: { eventid: eventid } }).then(resultado => {
         if (resultado == null || undefined) {
             Event.create({
                 adminpass: adminpass,
                 eventid: eventid,
+                eventdesc: eventdesc,
                 eventname: eventname,
                 bannerurl: bannerurl,
                 background: background,
@@ -55,10 +57,18 @@ app.post("/eventAdmin", (req, res) => {
 
 
 app.put("/eventAdmin/", (req, res) => {
-    let { eventid, adminpass, eventname, bannerurl, background, eventdate, localization, information } = req.body
+    let { eventid, adminpass, eventname, eventdesc, bannerurl, background, eventdate, localization, information } = req.body
     console.log(`Atualizando ${eventid}`)
-  
-    let total = req.body
+
+    let total = {
+        eventname: eventname,
+        eventdesc: eventdesc,
+        bannerurl: bannerurl,
+        background: background,
+        eventdate: eventdate,
+        localization: localization,
+        information: information
+    }
     console.table(total)
     Event.update({ total }, { where: { eventid, adminpass } }
     ).then(() => {
@@ -70,7 +80,7 @@ app.put("/eventAdmin/", (req, res) => {
 })
 app.get("/", (req, res) => {
 
-   res.send(200)
+    res.send(200)
 
 })
 app.get("/event", (req, res) => {
@@ -97,9 +107,9 @@ app.get("/list", (req, res) => {
         res.send(400)
     } else {
         let eventid = req.query.id
-             // biblioteca de operadores
+        // biblioteca de operadores
 
-        Confirmed.findAll({ raw: true, nest: true, where: {  eventid: {[sequelize.Op.like]: `%${eventid}%` } }}).then(person => {
+        Confirmed.findAll({ raw: true, nest: true, where: { eventid: { [sequelize.Op.like]: `%${eventid}%` } } }).then(person => {
             console.table(person)
             let result = {
                 data: person,
@@ -188,7 +198,7 @@ app.delete("/event", (req, res) => {
         let personid = String(req.body.id)
         let eventid = String(req.query.id)
 
-        Confirmed.destroy({ where: { personid: personid, eventid: {[sequelize.Op.like]: `%${eventid}%` }} }).then(function (rowDeleted) {
+        Confirmed.destroy({ where: { personid: personid, eventid: { [sequelize.Op.like]: `%${eventid}%` } } }).then(function (rowDeleted) {
             if (rowDeleted === 1) {
                 res.send(200)
                 console.log('Pessoa deletada');
